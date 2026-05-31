@@ -10,7 +10,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: '#F8FEFB' }}>
-      <main className="flex-1 pb-24 max-w-md mx-auto w-full">
+      <main className="flex-1 max-w-md mx-auto w-full">
         {children}
       </main>
       <BottomNav />
