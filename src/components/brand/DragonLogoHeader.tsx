@@ -1,13 +1,12 @@
-// Compact horizontal logo for mobile headers — wrapped in dark pill for contrast
+// Compact horizontal logo for the top bar
 export default function DragonLogoHeader({ className = '' }: { className?: string }) {
   return (
-    <div className={`flex flex-col items-end gap-1 ${className}`}>
     <div
-      className="flex items-center gap-2 px-3 py-1.5 rounded-xl"
+      className={`flex items-center gap-2 px-3 py-2 rounded-xl ${className}`}
       style={{ background: '#0D3B2E' }}
     >
-      {/* Mini dragon icon */}
-      <svg width="28" height="28" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Dragon icon */}
+      <svg width="26" height="26" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="lh-gold" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#FFE566"/>
@@ -34,13 +33,13 @@ export default function DragonLogoHeader({ className = '' }: { className?: strin
         <path d="M60 105 Q54 114 50 120 L60 116 L70 120 Q66 114 60 105 Z" fill="url(#lh-gold)"/>
       </svg>
 
-      {/* Text */}
-      <div className="flex flex-col leading-none gap-0.5">
+      {/* Text stack */}
+      <div className="flex flex-col leading-none">
         <div className="flex items-baseline gap-1.5">
           <span
             className="font-black"
             style={{
-              fontSize: 14,
+              fontSize: 15,
               background: 'linear-gradient(180deg, #FFE566 0%, #E0A800 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -50,20 +49,14 @@ export default function DragonLogoHeader({ className = '' }: { className?: strin
           >
             DRAGON
           </span>
-          <span
-            className="font-black"
-            style={{ fontSize: 10, color: '#F0FFF8', letterSpacing: '3px' }}
-          >
+          <span className="font-black" style={{ fontSize: 11, color: '#F0FFF8', letterSpacing: '3px' }}>
             NELY
           </span>
         </div>
+        <span style={{ fontSize: 9, color: '#6DD4A8', letterSpacing: '0.2px', fontStyle: 'italic', marginTop: 1 }}>
+          Porque se não chegar na meta, vai ter hein...
+        </span>
       </div>
-    </div>
-    <span
-      style={{ fontSize: 9, color: '#1D9E75', letterSpacing: '0.2px', fontStyle: 'italic' }}
-    >
-      Porque se não chegar na meta, vai ter hein...
-    </span>
     </div>
   )
 }

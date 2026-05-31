@@ -55,11 +55,13 @@ export default function DashboardClient({
   const [todayPoints, setTodayPoints]         = useState(initialTodayPoints)
   const [showConfetti, setShowConfetti]       = useState(false)
   const [avatarUrl, setAvatarUrl]             = useState<string | null>(user.avatar_url)
+  const [greeting, setGreeting]               = useState(`Olá, ${user.name.split(' ')[0]}!`)
 
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       navigator.serviceWorker.register('/sw.js').catch(() => {})
     }
+    setGreeting(greetingText(user.name.split(' ')[0]))
   }, [])
 
   function handleCheckinSuccess(pts: number, newStreak: number, newBadges: string[]) {
@@ -80,7 +82,7 @@ export default function DashboardClient({
     router.refresh()
   }
 
-  const today = new Date(todayInBrazil() + 'T12:00:00')
+  const today = new Date()
   const displayUser = { ...user, avatar_url: avatarUrl }
 
   return (
@@ -122,14 +124,13 @@ export default function DashboardClient({
         />
         <div className="flex-1 min-w-0">
           <h1
-            suppressHydrationWarning
             className="font-bold leading-tight"
             style={{ fontSize: 22, color: '#0D3B2E' }}
           >
-            {greetingText(user.name.split(' ')[0])}
+            {greeting}
           </h1>
-          <p className="mt-0.5 font-medium" style={{ fontSize: 14, color: '#1D9E75' }}>
-            {formatDateBR(today)}
+          <p suppressHydrationWarning className="mt-0.5 font-medium" style={{ fontSize: 14, color: '#1D9E75' }}>
+            {formatDateBR(new Date())}
           </p>
           <div className="mt-1.5">
             <PhaseIndicator createdAt={user.created_at} />
