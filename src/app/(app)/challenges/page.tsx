@@ -72,8 +72,8 @@ export default function ChallengesPage() {
   return (
     <div className="p-4 space-y-5">
       <div className="pt-2">
-        <h1 className="text-xl font-bold text-gray-900">Desafios</h1>
-        <p className="text-sm text-gray-500">Desafios semanais da família</p>
+        <h1 className="text-2xl font-black" style={{ color: '#0D3B2E' }}>Desafios 🏆</h1>
+        <p className="text-sm mt-1" style={{ color: '#1D9E75' }}>Desafios semanais da família</p>
       </div>
 
       {loading ? (
@@ -164,20 +164,39 @@ function ChallengeCard({
   onComplete: () => void
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
+    <div
+      className="rounded-2xl p-4 space-y-3"
+      style={{
+        background: '#FFFFFF',
+        border: upcoming ? '1.5px solid rgba(224,168,0,0.35)' : '1px solid rgba(29,158,117,0.2)',
+        boxShadow: '0 2px 12px rgba(13,59,46,0.06)',
+      }}
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-gray-900">{challenge.title}</h3>
-          <p className="text-sm text-gray-500 mt-0.5 leading-snug">{challenge.description}</p>
+          {/* EM BREVE badge */}
+          {upcoming && (
+            <span
+              className="inline-block text-xs font-black tracking-widest px-2.5 py-1 rounded-full mb-2"
+              style={{ background: 'rgba(224,168,0,0.15)', color: '#A87200', letterSpacing: '1.5px' }}
+            >
+              EM BREVE
+            </span>
+          )}
+          <h3 className="font-bold" style={{ fontSize: 16, color: '#0D3B2E' }}>{challenge.title}</h3>
+          <p className="mt-0.5 leading-snug" style={{ fontSize: 14, color: '#1D9E75' }}>{challenge.description}</p>
         </div>
         <div className="flex-shrink-0 text-right">
-          <span className="inline-block bg-yellow-50 text-yellow-700 text-xs font-bold px-2.5 py-1 rounded-full">
+          <span
+            className="inline-block text-xs font-black px-2.5 py-1 rounded-full"
+            style={{ background: 'rgba(224,168,0,0.12)', color: '#A87200' }}
+          >
             +{challenge.reward_points} pts
           </span>
         </div>
       </div>
 
-      <div className="flex items-center gap-1.5 text-xs text-gray-400">
+      <div className="flex items-center gap-1.5 text-xs" style={{ color: '#1D9E75' }}>
         <Calendar className="w-3 h-3" />
         <span>{formatDateBR(challenge.start_date)} – {formatDateBR(challenge.end_date)}</span>
       </div>
