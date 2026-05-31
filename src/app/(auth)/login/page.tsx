@@ -40,8 +40,8 @@ export default function LoginPage() {
         className="absolute inset-0 z-0"
         style={{
           backgroundImage: 'url(/familia.png)',
-          backgroundSize: '110%',
-          backgroundPosition: 'center 10%',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 25%',
         }}
       >
         {/* Gradient overlay — transparent at top, dark green at bottom */}
