@@ -51,26 +51,37 @@ export default function ChallengesPage() {
 
   async function markComplete(challenge: ChallengeWithCompletions) {
     setCompleting(challenge.id)
+
+    // Always get fresh user from auth
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      toast({ title: 'Erro: faça login novamente', variant: 'destructive' })
+      setCompleting(null)
+      return
+    }
+
     const { error } = await supabase
       .from('challenge_completions')
-      .insert({ challenge_id: challenge.id, user_id: currentUserId })
+      .insert({ challenge_id: challenge.id, user_id: user.id })
 
     if (error) {
-      toast({ title: 'Erro ao completar desafio', variant: 'destructive' })
+      toast({ title: `Erro: ${error.message}`, variant: 'destructive' })
     } else {
       // Award points
-      await fetch('/api/challenges/complete', {
+      const res = await fetch('/api/challenges/complete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ challengeId: challenge.id, rewardPoints: challenge.reward_points }),
       })
-      toast({ title: `+${challenge.reward_points} pontos! 🏆` })
-      // Refresh
+      if (res.ok) {
+        toast({ title: `+${challenge.reward_points} pontos! 🏆`, description: 'Desafio concluído!' })
+      }
+      // Refresh challenges
       const { data: chs } = await supabase
         .from('weekly_challenges')
         .select('*, completions:challenge_completions(*, user:users(*))')
         .order('start_date', { ascending: false })
-      setChallenges((chs as ChallengeWithCompletions[]) ?? [])
+      if (chs) setChallenges(chs as ChallengeWithCompletions[])
     }
     setCompleting(null)
   }
