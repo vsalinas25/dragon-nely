@@ -226,8 +226,8 @@ export default function LoginPage() {
           style={{ borderTop: '0.5px solid rgba(46,204,138,0.15)' }}
         >
           {[
-            { icon: '🔥', label: 'Streak' },
-            { icon: '🏆', label: 'Ranking' },
+            { icon: '🥗', label: 'Saúde' },
+            { icon: '👨‍👩‍👧‍👦', label: 'Família' },
             { icon: '💪', label: 'Evolução' },
           ].map(({ icon, label }) => (
             <div key={label} className="flex flex-col items-center gap-1 py-3">
