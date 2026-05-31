@@ -28,12 +28,22 @@ export default function ChallengesPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) setCurrentUserId(user.id)
 
-      const { data: chs } = await supabase
+      const { data: chs, error } = await supabase
         .from('weekly_challenges')
         .select('*, completions:challenge_completions(*, user:users(*))')
         .order('start_date', { ascending: false })
 
-      setChallenges((chs as ChallengeWithCompletions[]) ?? [])
+      if (error) {
+        // Fallback: fetch without join
+        const { data: simple } = await supabase
+          .from('weekly_challenges')
+          .select('*')
+          .order('start_date', { ascending: false })
+        const withEmpty = (simple ?? []).map((c) => ({ ...c, completions: [] }))
+        setChallenges(withEmpty as ChallengeWithCompletions[])
+      } else {
+        setChallenges((chs as ChallengeWithCompletions[]) ?? [])
+      }
       setLoading(false)
     }
     load()
