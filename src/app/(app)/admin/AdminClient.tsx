@@ -136,7 +136,7 @@ export default function AdminClient({ users, challenges: initialChallenges, chec
         <div className="space-y-4">
           <div className="bg-white rounded-2xl border border-gray-100 p-4 space-y-3">
             <h2 className="font-semibold text-gray-900 flex items-center gap-2">
-              <PlusCircle className="w-4 h-4 text-brand-500" /> Novo Desafio
+              <PlusCircle className="w-4 h-4 text-[#1D9E75]" /> Novo Desafio
             </h2>
             <input className={inputCls} placeholder="Título" value={title} onChange={(e) => setTitle(e.target.value)} />
             <textarea className={cn(inputCls, 'resize-none h-20')} placeholder="Descrição" value={description} onChange={(e) => setDescription(e.target.value)} />
@@ -259,7 +259,7 @@ export default function AdminClient({ users, challenges: initialChallenges, chec
                   <span title="Exercício" className={c.exercised ? 'opacity-100' : 'opacity-20'}>🏃</span>
                   <span title="Água" className={c.drank_water ? 'opacity-100' : 'opacity-20'}>💧</span>
                 </div>
-                <span className="text-xs font-bold text-brand-600 flex-shrink-0">{c.points_earned} pts</span>
+                <span className="text-xs font-bold text-[#1D9E75] flex-shrink-0">{c.points_earned} pts</span>
               </div>
             ))}
           </div>

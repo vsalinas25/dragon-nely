@@ -15,7 +15,7 @@ import DragonLogoHeader from '@/components/brand/DragonLogoHeader'
 import { useToast } from '@/components/ui/use-toast'
 import { greetingText, formatDateBR, todayInBrazil } from '@/lib/utils'
 import { BADGE_DEFINITIONS } from '@/types'
-import type { User, Streak, LeaderboardEntry } from '@/types'
+import type { User, Streak, LeaderboardEntry, WeeklyChallenge } from '@/types'
 
 const Confetti = dynamic(() => import('react-confetti'), { ssr: false })
 
@@ -31,6 +31,7 @@ interface Props {
   desiredWeight: number | null
   currentWeight: number | null
   leaderboard: LeaderboardEntry[]
+  activeChallenges: WeeklyChallenge[]
 }
 
 export default function DashboardClient({
@@ -45,6 +46,7 @@ export default function DashboardClient({
   desiredWeight,
   currentWeight,
   leaderboard,
+  activeChallenges,
 }: Props) {
   const router = useRouter()
   const { toast } = useToast()
@@ -144,6 +146,7 @@ export default function DashboardClient({
       <div className="px-4 space-y-4">
         <StreakIndicator streak={streak} longestStreak={initialStreak.longest_streak} animate={streakAnimating} />
         <CheckInCard alreadyCheckedIn={checkedIn} onSuccess={handleCheckinSuccess} />
+        {activeChallenges.length > 0 && <ChallengesWidget challenges={activeChallenges} today={todayInBrazil()} />}
         <QuickRanking entries={leaderboard} currentUserId={user.id} />
         <PointsSummary
           todayPoints={todayPoints}
@@ -155,6 +158,44 @@ export default function DashboardClient({
           <WeightGoalCard start={startWeight} desired={desiredWeight} current={currentWeight} />
         )}
       </div>
+    </div>
+  )
+}
+
+function ChallengesWidget({ challenges, today }: { challenges: WeeklyChallenge[], today: string }) {
+  return (
+    <div className="ios-card p-5 space-y-3">
+      <div className="flex items-center justify-between">
+        <p className="ios-section-label mb-0">Desafios</p>
+        <Link href="/challenges" className="text-sm font-semibold" style={{ color: '#1D9E75' }}>
+          Ver todos →
+        </Link>
+      </div>
+      {challenges.map((ch) => {
+        const isActive = ch.start_date <= today && ch.end_date >= today
+        return (
+          <div
+            key={ch.id}
+            className="flex items-center gap-3 p-3 rounded-2xl"
+            style={{
+              background: isActive ? 'rgba(29,158,117,0.08)' : 'rgba(224,168,0,0.06)',
+              border: isActive ? '1px solid rgba(29,158,117,0.2)' : '1px solid rgba(224,168,0,0.2)',
+            }}
+          >
+            <span style={{ fontSize: 28 }}>{isActive ? '🏁' : '⏳'}</span>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold leading-tight" style={{ fontSize: 15, color: '#0D3B2E' }}>{ch.title}</p>
+              <p className="mt-0.5" style={{ fontSize: 12, color: '#1D9E75' }}>{ch.description}</p>
+            </div>
+            <span
+              className="font-black flex-shrink-0"
+              style={{ fontSize: 13, color: isActive ? '#1D9E75' : '#A87200' }}
+            >
+              +{ch.reward_points} pts
+            </span>
+          </div>
+        )
+      })}
     </div>
   )
 }

@@ -18,7 +18,7 @@ export default async function DashboardPage() {
     profileRes, streakRes, pointsRes,
     todayCheckinRes, weekCheckinsRes,
     assessmentRes, latestWeightRes,
-    allUsersRes, allStreaksRes, allPointsRes, allWeightsRes,
+    allUsersRes, allStreaksRes, allPointsRes, allWeightsRes, challengesRes,
   ] = await Promise.all([
     supabase.from('users').select('*').eq('id', user.id).single(),
     supabase.from('streaks').select('*').eq('user_id', user.id).single(),
@@ -32,6 +32,7 @@ export default async function DashboardPage() {
     supabase.from('streaks').select('*'),
     supabase.from('points').select('*'),
     supabase.from('weight_logs').select('user_id,weight_kg,logged_at').order('logged_at'),
+    supabase.from('weekly_challenges').select('*').gte('end_date', today).order('start_date'),
   ])
 
   const profile    = profileRes.data
@@ -81,6 +82,7 @@ export default async function DashboardPage() {
       desiredWeight={assessment?.desired_weight_kg ?? null}
       currentWeight={latestWeight}
       leaderboard={leaderboard}
+      activeChallenges={challengesRes.data ?? []}
     />
   )
 }

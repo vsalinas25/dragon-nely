@@ -65,8 +65,9 @@ export default function ChallengesPage() {
     setCompleting(null)
   }
 
-  const active = challenges.filter((c) => c.start_date <= today && c.end_date >= today)
-  const past = challenges.filter((c) => c.end_date < today)
+  const active   = challenges.filter((c) => c.start_date <= today && c.end_date >= today)
+  const upcoming = challenges.filter((c) => c.start_date > today)
+  const past     = challenges.filter((c) => c.end_date < today)
 
   return (
     <div className="p-4 space-y-5">
@@ -104,11 +105,23 @@ export default function ChallengesPage() {
             </section>
           )}
 
-          {active.length === 0 && (
-            <div className="text-center py-8 bg-gray-50 rounded-2xl">
+          {active.length === 0 && upcoming.length === 0 && (
+            <div className="text-center py-8 rounded-2xl" style={{ background: 'rgba(29,158,117,0.06)' }}>
               <p className="text-3xl mb-2">🏆</p>
-              <p className="text-sm text-gray-500">Nenhum desafio ativo esta semana</p>
+              <p className="text-sm" style={{ color: '#1D9E75' }}>Nenhum desafio ativo esta semana</p>
             </div>
+          )}
+
+          {/* Upcoming challenges */}
+          {upcoming.length > 0 && (
+            <section className="space-y-3">
+              <h2 className="text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5" style={{ color: '#E0A800' }}>
+                ⏳ Em breve
+              </h2>
+              {upcoming.map((ch) => (
+                <ChallengeCard key={ch.id} challenge={ch} completed={false} upcoming loading={false} onComplete={() => {}} />
+              ))}
+            </section>
           )}
 
           {/* Past challenges */}
@@ -139,12 +152,14 @@ function ChallengeCard({
   challenge,
   completed,
   past,
+  upcoming,
   loading,
   onComplete,
 }: {
   challenge: ChallengeWithCompletions
   completed: boolean
   past?: boolean
+  upcoming?: boolean
   loading: boolean
   onComplete: () => void
 }) {
@@ -181,15 +196,21 @@ function ChallengeCard({
         </div>
       )}
 
-      {!past && (
+      {upcoming && (
+        <div className="w-full py-2.5 rounded-xl text-sm font-semibold text-center" style={{ background: 'rgba(224,168,0,0.1)', color: '#A87200' }}>
+          ⏳ Começa em {formatDateBR(challenge.start_date)}
+        </div>
+      )}
+
+      {!past && !upcoming && (
         <button
           onClick={onComplete}
           disabled={completed || loading}
-          className={`w-full py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2
-            ${completed
-              ? 'bg-brand-50 text-brand-600 border border-brand-200 cursor-default'
-              : 'bg-brand-500 text-white hover:bg-brand-600 active:scale-[0.98]'
-            } disabled:opacity-60`}
+          className="w-full py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+          style={completed
+            ? { background: 'rgba(29,158,117,0.1)', color: '#1D9E75', border: '1px solid rgba(29,158,117,0.3)' }
+            : { background: 'linear-gradient(135deg, #1D9E75, #2ECC8A)', color: '#fff', boxShadow: '0 4px 12px rgba(29,158,117,0.25)' }
+          }
         >
           {loading ? (
             <Loader2 className="w-4 h-4 animate-spin" />
