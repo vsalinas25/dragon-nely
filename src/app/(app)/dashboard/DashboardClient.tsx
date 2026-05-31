@@ -68,9 +68,7 @@ export default function DashboardClient({
     setStreak(newStreak)
     setStreakAnimating(true)
     setTimeout(() => setStreakAnimating(false), 1000)
-
     toast({ title: `+${pts} pontos! 🎉`, description: newStreak > 1 ? `Streak de ${newStreak} dias! 🔥` : 'Check-in feito!' })
-
     if (newBadges.length > 0) {
       setShowConfetti(true)
       setTimeout(() => setShowConfetti(false), 4000)
@@ -79,7 +77,6 @@ export default function DashboardClient({
         if (def) setTimeout(() => toast({ title: `Badge desbloqueado! ${def.icon}`, description: def.label }), 500)
       })
     }
-
     router.refresh()
   }
 
@@ -87,7 +84,7 @@ export default function DashboardClient({
   const displayUser = { ...user, avatar_url: avatarUrl }
 
   return (
-    <div className="px-4 pt-2 pb-6 space-y-3">
+    <div className="pb-8 space-y-4">
       {showConfetti && (
         <Confetti
           recycle={false}
@@ -98,60 +95,63 @@ export default function DashboardClient({
         />
       )}
 
-      {/* Header */}
-      <div className="flex items-center justify-between pt-3 pb-1">
-        <div className="flex items-center gap-3.5">
-          <Avatar
-            user={{ ...displayUser, id: user.id }}
-            size="xl"
-            editable
-            onUpload={(url) => setAvatarUrl(url)}
-          />
-          <div>
-            <h1 suppressHydrationWarning className="font-bold text-[17px] leading-tight" style={{ color: '#0D3B2E' }}>
-              {greetingText(user.name.split(' ')[0])}
-            </h1>
-            <p className="text-xs mt-0.5" style={{ color: '#1D9E75' }}>{formatDateBR(today)}</p>
-            <div className="mt-1">
-              <PhaseIndicator createdAt={user.created_at} />
-            </div>
+      {/* Top bar — logo + settings */}
+      <div
+        className="flex items-center justify-between px-4 pt-4 pb-3"
+        style={{ borderBottom: '0.5px solid rgba(29,158,117,0.15)' }}
+      >
+        <DragonLogoHeader />
+        {user.is_admin && (
+          <Link
+            href="/admin"
+            className="p-2.5 rounded-xl transition-colors"
+            style={{ background: 'rgba(29,158,117,0.08)' }}
+          >
+            <Settings className="w-5 h-5" style={{ color: '#1D9E75' }} />
+          </Link>
+        )}
+      </div>
+
+      {/* User greeting row */}
+      <div className="flex items-center gap-4 px-4">
+        <Avatar
+          user={{ ...displayUser, id: user.id }}
+          size="xl"
+          editable
+          onUpload={(url) => setAvatarUrl(url)}
+        />
+        <div className="flex-1 min-w-0">
+          <h1
+            suppressHydrationWarning
+            className="font-bold leading-tight"
+            style={{ fontSize: 22, color: '#0D3B2E' }}
+          >
+            {greetingText(user.name.split(' ')[0])}
+          </h1>
+          <p className="mt-0.5 font-medium" style={{ fontSize: 14, color: '#1D9E75' }}>
+            {formatDateBR(today)}
+          </p>
+          <div className="mt-1.5">
+            <PhaseIndicator createdAt={user.created_at} />
           </div>
-        </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <DragonLogoHeader />
-          {user.is_admin && (
-            <Link
-              href="/admin"
-              className="p-2 rounded-xl transition-colors flex-shrink-0"
-              style={{ background: 'rgba(29,158,117,0.08)' }}
-            >
-              <Settings className="w-4 h-4" style={{ color: '#1D9E75' }} />
-            </Link>
-          )}
         </div>
       </div>
 
-      {/* Streak */}
-      <StreakIndicator streak={streak} longestStreak={initialStreak.longest_streak} animate={streakAnimating} />
-
-      {/* Check-in */}
-      <CheckInCard alreadyCheckedIn={checkedIn} onSuccess={handleCheckinSuccess} />
-
-      {/* Quick Ranking */}
-      <QuickRanking entries={leaderboard} currentUserId={user.id} />
-
-      {/* Points */}
-      <PointsSummary
-        todayPoints={todayPoints}
-        weekPoints={weekPoints}
-        monthPoints={monthlyPoints}
-        totalPoints={totalPoints}
-      />
-
-      {/* Weight goal */}
-      {startWeight && desiredWeight && currentWeight && (
-        <WeightGoalCard start={startWeight} desired={desiredWeight} current={currentWeight} />
-      )}
+      {/* Content cards */}
+      <div className="px-4 space-y-4">
+        <StreakIndicator streak={streak} longestStreak={initialStreak.longest_streak} animate={streakAnimating} />
+        <CheckInCard alreadyCheckedIn={checkedIn} onSuccess={handleCheckinSuccess} />
+        <QuickRanking entries={leaderboard} currentUserId={user.id} />
+        <PointsSummary
+          todayPoints={todayPoints}
+          weekPoints={weekPoints}
+          monthPoints={monthlyPoints}
+          totalPoints={totalPoints}
+        />
+        {startWeight && desiredWeight && currentWeight && (
+          <WeightGoalCard start={startWeight} desired={desiredWeight} current={currentWeight} />
+        )}
+      </div>
     </div>
   )
 }
@@ -165,17 +165,17 @@ function WeightGoalCard({ start, desired, current }: { start: number; desired: n
     <div className="ios-card p-5 space-y-3">
       <div className="flex items-center justify-between">
         <p className="ios-section-label mb-0">Meta de peso</p>
-        <span className="text-xs font-bold" style={{ color: '#2ECC8A' }}>{pct.toFixed(0)}% concluído</span>
+        <span className="text-sm font-bold" style={{ color: '#1D9E75' }}>{pct.toFixed(0)}% concluído</span>
       </div>
-      <div className="flex items-center justify-between text-sm">
-        <span style={{ color: '#1D9E75' }}>{start} kg</span>
-        <span className="font-black text-[17px]" style={{ color: '#0D3B2E' }}>{current} kg</span>
-        <span className="font-semibold" style={{ color: '#2ECC8A' }}>{desired} kg 🎯</span>
+      <div className="flex items-center justify-between">
+        <span style={{ fontSize: 15, color: '#1D9E75' }}>{start} kg</span>
+        <span className="font-black" style={{ fontSize: 22, color: '#0D3B2E' }}>{current} kg</span>
+        <span className="font-semibold" style={{ fontSize: 15, color: '#1D9E75' }}>{desired} kg 🎯</span>
       </div>
       <div className="progress-bar-track">
         <div className="progress-bar-fill" style={{ width: `${pct}%` }} />
       </div>
-      <p className="text-xs text-center" style={{ color: '#1D9E75' }}>
+      <p className="text-center" style={{ fontSize: 13, color: '#1D9E75' }}>
         {lost > 0
           ? `${lost.toFixed(1)} kg perdidos · faltam ${Math.max(0, current - desired).toFixed(1)} kg`
           : `Meta: perder ${totalToLose.toFixed(1)} kg`}

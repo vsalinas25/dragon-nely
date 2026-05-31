@@ -15,34 +15,32 @@ export default function StreakIndicator({ streak, longestStreak, animate }: Prop
 
   return (
     <div className={cn('ios-card p-5 flex items-center gap-5', animate && 'animate-bounce-in')}>
-      {/* Ring */}
       <ActivityRing
         progress={progress}
         color="#E0A800"
         trackColor="rgba(224,168,0,0.15)"
-        size={88}
+        size={96}
         strokeWidth={10}
       >
-        <span className="text-2xl">🔥</span>
+        <span style={{ fontSize: 28 }}>🔥</span>
       </ActivityRing>
 
-      {/* Stats */}
       <div className="flex-1">
         <p className="ios-section-label mb-1">Sequência atual</p>
-        <div className="flex items-baseline gap-1.5">
+        <div className="flex items-baseline gap-2">
           <span
-            className={cn('text-5xl font-black tabular-nums leading-none', animate && 'animate-streak-pulse')}
-            style={{ color: '#E0A800' }}
+            className={cn('font-black tabular-nums leading-none', animate && 'animate-streak-pulse')}
+            style={{ fontSize: 56, color: '#E0A800' }}
           >
             {streak}
           </span>
-          <span className="text-lg font-semibold" style={{ color: '#1D9E75' }}>
+          <span className="font-semibold" style={{ fontSize: 20, color: '#1D9E75' }}>
             {streak === 1 ? 'dia' : 'dias'}
           </span>
         </div>
-        <p className="text-xs mt-1" style={{ color: '#1D9E75' }}>
+        <p className="mt-1" style={{ fontSize: 14, color: '#1D9E75' }}>
           Recorde:{' '}
-          <span className="font-semibold" style={{ color: '#E0A800' }}>
+          <span className="font-bold" style={{ color: '#E0A800' }}>
             {longestStreak} dias
           </span>
         </p>
