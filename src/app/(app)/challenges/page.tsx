@@ -219,8 +219,8 @@ function ChallengeCard({
               <Avatar key={c.id} user={c.user} size="sm" className="border-2 border-white" />
             ))}
           </div>
-          <span className="text-xs text-gray-500">
-            {challenge.completions.length} {challenge.completions.length === 1 ? 'concluiu' : 'concluíram'}
+          <span className="text-xs font-semibold" style={{ color: '#1D9E75' }}>
+            {challenge.completions.length} {challenge.completions.length === 1 ? 'já fez ✅' : 'já fizeram ✅'}
           </span>
         </div>
       )}
@@ -235,20 +235,22 @@ function ChallengeCard({
         <button
           onClick={onComplete}
           disabled={completed || loading}
-          className="w-full py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-60"
-          style={completed
-            ? { background: 'rgba(29,158,117,0.1)', color: '#1D9E75', border: '1px solid rgba(29,158,117,0.3)' }
-            : { background: 'linear-gradient(135deg, #1D9E75, #2ECC8A)', color: '#fff', boxShadow: '0 4px 12px rgba(29,158,117,0.25)' }
-          }
+          className="w-full rounded-2xl font-bold transition-all active:scale-[0.97] flex items-center justify-center gap-2 disabled:opacity-60"
+          style={{
+            height: 54,
+            fontSize: 16,
+            ...(completed
+              ? { background: 'rgba(29,158,117,0.1)', color: '#1D9E75', border: '1.5px solid rgba(29,158,117,0.3)' }
+              : { background: 'linear-gradient(135deg, #1D9E75, #2ECC8A)', color: '#fff', boxShadow: '0 4px 16px rgba(29,158,117,0.3)' }
+            )
+          }}
         >
           {loading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className="w-5 h-5 animate-spin" />
           ) : completed ? (
-            <>
-              <CheckCircle2 className="w-4 h-4" /> Concluído ✓
-            </>
+            <><CheckCircle2 className="w-5 h-5" /> Feito! ✅</>
           ) : (
-            '🏁 Marcar como Concluído'
+            'Marcar como Feito ✅'
           )}
         </button>
       )}
