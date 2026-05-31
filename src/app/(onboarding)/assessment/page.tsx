@@ -104,12 +104,12 @@ export default function AssessmentPage() {
   const progress = ((step) / TOTAL_STEPS) * 100
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-brand-50 to-white flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: '#F8FEFB' }}>
       {/* Progress bar */}
-      <div className="h-1.5 bg-gray-100 w-full">
+      <div className="h-1.5 w-full" style={{ background: 'rgba(29,158,117,0.15)' }}>
         <div
-          className="h-full bg-brand-500 transition-all duration-500 ease-out"
-          style={{ width: `${progress}%` }}
+          className="h-full transition-all duration-500 ease-out"
+          style={{ width: `${progress}%`, background: '#1D9E75' }}
         />
       </div>
 
@@ -118,11 +118,12 @@ export default function AssessmentPage() {
         <div className="flex items-center justify-between mb-8 mt-4">
           <button
             onClick={back}
-            className={cn('p-2 rounded-xl text-gray-400 hover:text-gray-600 transition-colors', step === 0 && 'invisible')}
+            className={cn('p-2 rounded-xl transition-colors', step === 0 && 'invisible')}
+            style={{ color: '#1D9E75' }}
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-6 h-6" />
           </button>
-          <span className="text-xs font-semibold text-gray-400">
+          <span className="text-sm font-bold" style={{ color: '#1D9E75' }}>
             {step + 1} de {TOTAL_STEPS}
           </span>
           <div className="w-9" />
@@ -270,34 +271,32 @@ export default function AssessmentPage() {
         </div>
 
         {error && (
-          <p className="text-sm text-red-500 text-center mb-3">{error}</p>
+          <p className="text-sm text-center mb-3" style={{ color: '#E74C3C' }}>{error}</p>
         )}
+      </div>
 
-        {/* CTA */}
+      {/* Sticky bottom button — always visible above keyboard */}
+      <div
+        className="sticky bottom-0 px-6 pb-8 pt-3"
+        style={{ background: '#F8FEFB', borderTop: '0.5px solid rgba(29,158,117,0.15)' }}
+      >
         <button
           onClick={next}
           disabled={saving || !canProceed()}
-          className={cn(
-            'w-full py-4 rounded-2xl font-bold text-white text-base transition-all',
-            'flex items-center justify-center gap-2',
-            canProceed() ? 'bg-brand-500 hover:bg-brand-600 active:scale-[0.98]' : 'bg-gray-200 text-gray-400',
-            'disabled:cursor-not-allowed'
-          )}
+          className="w-full rounded-2xl font-bold text-lg transition-all active:scale-[0.97] flex items-center justify-center gap-2"
+          style={{
+            height: 58,
+            background: canProceed() ? 'linear-gradient(135deg, #1D9E75, #2ECC8A)' : 'rgba(29,158,117,0.15)',
+            color: canProceed() ? '#FFFFFF' : 'rgba(29,158,117,0.4)',
+            boxShadow: canProceed() ? '0 4px 16px rgba(29,158,117,0.3)' : 'none',
+          }}
         >
           {saving ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Salvando…
-            </>
+            <><Loader2 className="w-5 h-5 animate-spin" /> Salvando…</>
           ) : step === TOTAL_STEPS - 1 ? (
-            <>
-              Começar o Desafio! 🚀
-            </>
+            'Começar o Desafio! 🚀'
           ) : (
-            <>
-              Continuar
-              <ChevronRight className="w-4 h-4" />
-            </>
+            <>Continuar <ChevronRight className="w-5 h-5" /></>
           )}
         </button>
       </div>
@@ -313,10 +312,10 @@ function Step({ emoji, title, subtitle, children }: {
 }) {
   return (
     <div className="animate-slide-up">
-      <div className="text-center mb-6">
-        <div className="text-6xl mb-4">{emoji}</div>
-        <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
-        <p className="text-gray-500 text-sm mt-1">{subtitle}</p>
+      <div className="text-center mb-8">
+        <div className="text-7xl mb-5">{emoji}</div>
+        <h2 className="font-bold" style={{ fontSize: 26, color: '#0D3B2E' }}>{title}</h2>
+        <p className="mt-2" style={{ fontSize: 16, color: '#1D9E75' }}>{subtitle}</p>
       </div>
       {children}
     </div>
@@ -333,18 +332,23 @@ function NumberInput({ value, onChange, unit, placeholder, min, max, isInt }: {
   isInt?: boolean
 }) {
   return (
-    <div className="flex items-center gap-2 bg-white border-2 border-gray-200 rounded-2xl px-4 py-3 focus-within:border-brand-500 transition-colors">
+    <div
+      className="flex items-center gap-3 rounded-2xl px-5 py-4 transition-all"
+      style={{ background: '#FFFFFF', border: '2px solid rgba(29,158,117,0.3)' }}
+    >
       <input
         type="number"
+        inputMode="decimal"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         min={min}
         max={max}
         step={isInt ? 1 : 0.1}
-        className="flex-1 text-2xl font-bold text-gray-900 outline-none bg-transparent tabular-nums"
+        className="flex-1 outline-none bg-transparent tabular-nums font-black"
+        style={{ fontSize: 32, color: '#0D3B2E' }}
       />
-      <span className="text-lg font-semibold text-gray-400">{unit}</span>
+      <span className="font-bold" style={{ fontSize: 18, color: '#1D9E75' }}>{unit}</span>
     </div>
   )
 }
