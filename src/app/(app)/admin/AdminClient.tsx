@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { PlusCircle, Download, Loader2, Shield } from 'lucide-react'
+import { PlusCircle, Download, Loader2, Shield, Trash2, StopCircle } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 import { cn, formatDateBR } from '@/lib/utils'
 import type { User, WeeklyChallenge, Points } from '@/types'
@@ -66,6 +66,30 @@ export default function AdminClient({ users, challenges: initialChallenges, chec
       toast({ title: 'Desafio criado! ✓' })
     }
     setSaving(false)
+  }
+
+  async function deleteChallenge(id: string) {
+    if (!confirm('Excluir este desafio?')) return
+    const { error } = await supabase.from('weekly_challenges').delete().eq('id', id)
+    if (error) {
+      toast({ title: 'Erro ao excluir', variant: 'destructive' })
+    } else {
+      setChallenges((prev) => prev.filter((c) => c.id !== id))
+      toast({ title: 'Desafio excluído' })
+    }
+  }
+
+  async function endChallengeNow(id: string) {
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    const dateStr = yesterday.toISOString().slice(0, 10)
+    const { error } = await supabase.from('weekly_challenges').update({ end_date: dateStr }).eq('id', id)
+    if (error) {
+      toast({ title: 'Erro ao encerrar', variant: 'destructive' })
+    } else {
+      setChallenges((prev) => prev.map((c) => c.id === id ? { ...c, end_date: dateStr } : c))
+      toast({ title: 'Desafio encerrado ✓' })
+    }
   }
 
   async function adjustPoints() {
@@ -165,22 +189,49 @@ export default function AdminClient({ users, challenges: initialChallenges, chec
           </div>
 
           <div className="space-y-2">
-            {challenges.map((ch) => (
-              <div key={ch.id} className="bg-white rounded-xl border border-gray-100 p-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="font-semibold text-sm text-gray-900">{ch.title}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{ch.description}</p>
-                    <p className="text-[10px] text-gray-400 mt-1">
-                      {formatDateBR(ch.start_date)} – {formatDateBR(ch.end_date)}
-                    </p>
+            {challenges.map((ch) => {
+              const today = new Date().toISOString().slice(0, 10)
+              const isActive = ch.start_date <= today && ch.end_date >= today
+              const isUpcoming = ch.start_date > today
+              const isPast = ch.end_date < today
+              return (
+                <div key={ch.id} className="bg-white rounded-xl p-3 space-y-2" style={{ border: '1px solid rgba(29,158,117,0.2)' }}>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-semibold text-sm" style={{ color: '#0D3B2E' }}>{ch.title}</p>
+                        {isActive   && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(29,158,117,0.12)', color: '#1D9E75' }}>ATIVO</span>}
+                        {isUpcoming && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(224,168,0,0.12)', color: '#A87200' }}>EM BREVE</span>}
+                        {isPast     && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(0,0,0,0.06)', color: '#888' }}>ENCERRADO</span>}
+                      </div>
+                      <p className="text-xs mt-0.5" style={{ color: '#1D9E75' }}>{ch.description}</p>
+                      <p className="text-[10px] mt-1" style={{ color: '#A8F0D0' }}>
+                        {formatDateBR(ch.start_date)} – {formatDateBR(ch.end_date)} · {ch.reward_points} pts
+                      </p>
+                    </div>
                   </div>
-                  <span className="text-xs bg-yellow-50 text-yellow-700 font-bold px-2 py-0.5 rounded-full flex-shrink-0">
-                    {ch.reward_points} pts
-                  </span>
+                  {/* Actions */}
+                  <div className="flex gap-2">
+                    {!isPast && (
+                      <button
+                        onClick={() => endChallengeNow(ch.id)}
+                        className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all"
+                        style={{ background: 'rgba(224,168,0,0.1)', color: '#A87200', border: '1px solid rgba(224,168,0,0.25)' }}
+                      >
+                        <StopCircle className="w-3.5 h-3.5" /> Encerrar
+                      </button>
+                    )}
+                    <button
+                      onClick={() => deleteChallenge(ch.id)}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all"
+                      style={{ background: 'rgba(231,76,60,0.08)', color: '#E74C3C', border: '1px solid rgba(231,76,60,0.2)' }}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Excluir
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}
