@@ -157,9 +157,10 @@ export default function AdminClient({ users, challenges: initialChallenges, chec
             <button
               onClick={createChallenge}
               disabled={saving}
-              className="w-full py-2.5 bg-brand-500 text-white font-semibold rounded-xl text-sm disabled:opacity-60 flex items-center justify-center gap-2"
+              className="w-full py-3 font-bold rounded-xl text-base disabled:opacity-60 flex items-center justify-center gap-2"
+              style={{ background: 'linear-gradient(135deg, #1D9E75, #2ECC8A)', color: '#fff', boxShadow: '0 4px 16px rgba(29,158,117,0.3)' }}
             >
-              {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : null} Criar Desafio
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null} Criar Desafio 🏆
             </button>
           </div>
 
@@ -239,7 +240,8 @@ export default function AdminClient({ users, challenges: initialChallenges, chec
         <div className="space-y-3">
           <button
             onClick={exportCSV}
-            className="flex items-center gap-2 px-4 py-2.5 bg-brand-500 text-white rounded-xl text-sm font-semibold w-full justify-center"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold w-full justify-center text-white"
+            style={{ background: '#1D9E75' }}
           >
             <Download className="w-4 h-4" /> Exportar CSV
           </button>
