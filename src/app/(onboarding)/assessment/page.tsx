@@ -130,7 +130,7 @@ export default function AssessmentPage() {
         </div>
 
         {/* Steps */}
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col gap-6">
           {step === 0 && (
             <Step
               emoji="⚖️"
@@ -271,19 +271,14 @@ export default function AssessmentPage() {
         </div>
 
         {error && (
-          <p className="text-sm text-center mb-3" style={{ color: '#E74C3C' }}>{error}</p>
+          <p className="text-sm text-center" style={{ color: '#E74C3C' }}>{error}</p>
         )}
-      </div>
 
-      {/* Sticky bottom button — always visible above keyboard */}
-      <div
-        className="sticky bottom-0 px-6 pb-8 pt-3"
-        style={{ background: '#F8FEFB', borderTop: '0.5px solid rgba(29,158,117,0.15)' }}
-      >
+        {/* Button inline — not affected by keyboard */}
         <button
           onClick={next}
           disabled={saving || !canProceed()}
-          className="w-full rounded-2xl font-bold text-lg transition-all active:scale-[0.97] flex items-center justify-center gap-2"
+          className="w-full rounded-2xl font-bold text-lg transition-all active:scale-[0.97] flex items-center justify-center gap-2 mt-2 mb-8"
           style={{
             height: 58,
             background: canProceed() ? 'linear-gradient(135deg, #1D9E75, #2ECC8A)' : 'rgba(29,158,117,0.15)',
